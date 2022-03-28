@@ -1,58 +1,39 @@
-import string
-import copy
 from queue import PriorityQueue
-from dataclasses import dataclass, field
-from typing import Any
+from puzzle import PuzzleItem
 
-@dataclass(order=True)
-class PrioritizedItem:
-    priority: int
-    item: Any=field(compare=False)
-    direction: string=field
-    
-    
-def solve(p):
-    dir_dict = {
-        "LEFT": "RIGHT",
-        "RIGHT": "LEFT",
-        "UP": "DOWN",
-        "DOWN": "UP"
-    }
-    
-    dir_list = ["UP", "RIGHT", "DOWN", "LEFT"]
-    
+def solve(p):  
+    print()  
     if (not p.isSolved()):
         if ((p.sumOfInvalidPos() + p.nullPos()) % 2 != 0):
             print("Puzzle couldn't be solved!")
         else:
             print("Solving puzzle ... ")
 
-            depth = 0
             prioqueue = PriorityQueue()
-            prioqueue.put(PrioritizedItem(0, p, "NONE"))
-            
-            # evaluate each possible direction
+            prioqueue.put(PuzzleItem(0, p, "NONE"))
+            puzzle_arr = []
+            res = []
+            curr_id = 0
+
             while (prioqueue.qsize() != 0):
-                puzzleObj = prioqueue.get()
-                temp = puzzleObj.item
-                pdir = puzzleObj.direction
-                # p.show()
-                depth += 1
+                puzzleItem = prioqueue.get()
+                puzzle_arr.append([puzzleItem.item, puzzleItem.direction])
+                curr_id += 1
+                if (not puzzleItem.item.insertingIntoQueue(prioqueue, curr_id, puzzleItem.direction)):
+                    break
+        
+            puzzle_elmt = puzzle_arr[-1]
+            while (puzzle_elmt[0].id != 0):
+                res.append(puzzle_elmt)
+                puzzle_elmt = puzzle_arr[puzzle_elmt[0].id - 1]
+            res.append([p, "NONE"])
+            res.reverse()
+            
+            for i in range(len(res)):
+                res[i][0].show()
+                print("Command | " + res[i][1])
+                print()
                 
-                for i in range(0, len(dir_list)):
-                    if (((depth == 1) or (depth > 1 and dir_list[i] != dir_dict[pdir]))
-                        and temp.checkDir(dir_list[i])):
-                        
-                        tp = copy.deepcopy(temp)
-                        tp.shift(dir_list[i])
-                        tempcost = depth + tp.nonMatchingTile()
-                        prioqueue.put(PrioritizedItem(tempcost, tp, dir_list[i]))
-               
-                        if temp.isSolved():
-                            print("Puzzle solved!")
-                            return
-                        
-                        # t.swap(dir_dict[dir_list[i]])
-                    
+            print("Solved!")        
     else:
         print("Puzzle is already solved!")

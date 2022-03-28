@@ -1,21 +1,33 @@
-class Puzzle:
+from dataclasses import dataclass, field
+import string
+from typing import Any
+
+@dataclass(order=True)
+class PuzzleItem:
+    priority: int
+    item: Any=field(compare=False)
+    direction: string
     
+    
+class Puzzle:
+
     # data members
     ROW_SIZE = 4
     COL_SIZE = 4
     NULL_I = 0
     NULL_J = 0
-    
+    curr_depth = 0
+    id = 0
     '''
     Constructor for the puzzle matrix
-    ''';
+    '''
     def __init__(self, puzzle_string):
         self.buffer = [[0 for _ in range(self.COL_SIZE)] for _ in range(self.ROW_SIZE)]
         for i in range(self.ROW_SIZE):
             for j in range(self.COL_SIZE):
                 elmt = puzzle_string[i * self.COL_SIZE + j]
                 self.buffer[i][j] = elmt
-                if (elmt == "-"):
+                if (elmt == "ES"):
                     self.NULL_I = i
                     self.NULL_J = j
                 
@@ -27,7 +39,6 @@ class Puzzle:
             for j in range(self.COL_SIZE):
                 print(self.buffer[i][j], end = " ")
             print()
-        print()
     
     '''
     Checks possible movement directions for the current position
@@ -36,13 +47,13 @@ class Puzzle:
         i = self.NULL_I
         j = self.NULL_J
         if (direction == "LEFT"):
-            return j != 0 and self.buffer[i][j - 1] != "-"
+            return j != 0 and self.buffer[i][j - 1] != "ES"
         elif (direction == "RIGHT"):
-            return (j != self.COL_SIZE - 1) and self.buffer[i][j + 1] != "-"
+            return (j != self.COL_SIZE - 1) and self.buffer[i][j + 1] != "ES"
         elif (direction == "UP"):
-            return i != 0 and self.buffer[i - 1][j] != "-"
+            return i != 0 and self.buffer[i - 1][j] != "ES"
         elif (direction == "DOWN"):
-            return (i != self.ROW_SIZE - 1) and self.buffer[i + 1][j] != "-" 
+            return (i != self.ROW_SIZE - 1) and self.buffer[i + 1][j] != "ES" 
         
     '''
     shifts element of the puzzle matrix
@@ -53,19 +64,19 @@ class Puzzle:
         if (self.checkDir(direction)):
             if (direction == "LEFT"): # NULL goes left
                 self.buffer[i][j] = self.buffer[i][j - 1]
-                self.buffer[i][j - 1] = "-"
+                self.buffer[i][j - 1] = "ES"
                 self.NULL_J -= 1
             elif (direction == "RIGHT"): # NULL goes right
                 self.buffer[i][j] = self.buffer[i][j + 1]
-                self.buffer[i][j + 1] = "-"
+                self.buffer[i][j + 1] = "ES"
                 self.NULL_J += 1
             elif (direction == "UP"): # NULL goes up
                 self.buffer[i][j] = self.buffer[i - 1][j]
-                self.buffer[i - 1][j] = "-"
+                self.buffer[i - 1][j] = "ES"
                 self.NULL_I -= 1
             elif (direction == "DOWN"): # NULL goes down
                 self.buffer[i][j] = self.buffer[i + 1][j]
-                self.buffer[i + 1][j] = "-"
+                self.buffer[i + 1][j] = "ES"
                 self.NULL_I += 1
                 
     '''
@@ -73,7 +84,7 @@ class Puzzle:
     '''
     def isSolved(self):
         # return False if last element is not NULL
-        if (self.buffer[self.ROW_SIZE - 1][self.COL_SIZE - 1] != "-"):
+        if (self.buffer[self.ROW_SIZE - 1][self.COL_SIZE - 1] != "ES"):
             return False
         
         # else, check if all elements are in correct order, except for last element
@@ -101,10 +112,10 @@ class Puzzle:
     def invalidPos(self, idx):
         count = 0
         flattened_buffer = [x for arr in self.buffer for x in arr]
-        if (flattened_buffer[idx] == "-"):
+        if (flattened_buffer[idx] == "ES"):
             count = self.COL_SIZE * self.ROW_SIZE - idx - 1
         for i in range(idx, len(flattened_buffer)):
-            if (flattened_buffer[i] != "-" and flattened_buffer[idx] != "-"):
+            if (flattened_buffer[i] != "ES" and flattened_buffer[idx] != "ES"):
                 if (int(flattened_buffer[i]) < int(flattened_buffer[idx]) and i > idx):
                     count += 1
         return count
@@ -126,6 +137,75 @@ class Puzzle:
         count = 0
         flattened_buffer = [x for arr in self.buffer for x in arr]
         for i in range(0, len(flattened_buffer)):
-            if (flattened_buffer[i] != "-" and (int(flattened_buffer[i]) != (i + 1))):
+            if (flattened_buffer[i] != "ES" and (int(flattened_buffer[i]) != (i + 1))):
                 count += 1
         return count;
+    
+    # def createShiftedPuzzle(self, direction, prev_direction, curr_id):
+    #     direction_dict = {
+    #         "UP": "DOWN",
+    #         "DOWN": "LEFT",
+    #         "LEFT": "RIGHT",
+    #         "RIGHT": "LEFT"
+    #     }
+
+    #     puzzle = None
+    #     if (self.checkDir(direction) and prev_direction != direction_dict[direction]):
+    #         puzzle = Puzzle([x for arr in self.buffer for x in arr])
+    #         puzzle.shift(direction)
+    #         puzzle.curr_depth = self.curr_depth + 1
+    #         puzzle.id = curr_id
+    #     return puzzle
+    
+    def insertingIntoQueue(self, queue, curr_id, direction):
+        if (self.isSolved()):
+            return False
+
+        # for direction in ["UP", "DOWN", "LEFT", "RIGHT"]:
+        #     temp = self.createShiftedPuzzle(direction, prev_direction, curr_id)
+        #     if (temp != None):
+        #         puzzle = Puzzle([x for arr in self.buffer for x in arr])
+        #         puzzle.shift(direction)
+        #         puzzle.curr_depth = self.curr_depth + 1
+        #         puzzle.id = curr_id
+        #         currCost = temp.curr_depth + temp.nonMatchingTile()
+        #         puzzle.show()
+        #         queue.put(PuzzleItem(currCost, temp, direction))
+        #         temp = None
+        if (self.checkDir("UP") and direction != "DOWN"):
+                puzzle = Puzzle([x for arr in self.buffer for x in arr])
+                puzzle.shift("UP")
+                puzzle.curr_depth = self.curr_depth + 1
+                puzzle.id = curr_id
+                currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+                # puzzle.show()
+                queue.put(PuzzleItem(currCost, puzzle,"UP"))
+            
+        if (self.checkDir("RIGHT") and direction != "LEFT"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("RIGHT")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            queue.put(PuzzleItem(currCost, puzzle, "RIGHT"))
+            
+        if (self.checkDir("DOWN") and direction != "UP"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("DOWN")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            queue.put(PuzzleItem(currCost, puzzle, "DOWN"))
+            
+        if (self.checkDir("LEFT") and direction != "RIGHT"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("LEFT")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            queue.put(PuzzleItem(currCost, puzzle, "LEFT"))
+            
+        return True

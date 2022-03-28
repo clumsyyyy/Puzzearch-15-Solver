@@ -33,15 +33,17 @@ class Puzzle:
     '''
     Checks possible movement directions for the current position
     '''
-    def checkDir(self, i, j, direction):
+    def checkDir(self, direction):
+        i = self.NULL_I
+        j = self.NULL_J
         if (direction == "LEFT"):
             return self.buffer[i][j - 1] != "NULL" and j != 0
         elif (direction == "RIGHT"):
-            return self.buffer[i][j + 1] != "NULL" and j != self.COL_SIZE - 1
+            return (j != self.COL_SIZE - 1) and self.buffer[i][j + 1] != "NULL"
         elif (direction == "UP"):
             return self.buffer[i - 1][j] != "NULL" and i != 0
         elif (direction == "DOWN"):
-            return self.buffer[i + 1][j] != "NULL" and i != self.ROW_SIZE - 1
+            return (i != self.ROW_SIZE - 1) and self.buffer[i + 1][j] != "NULL" 
         
     '''
     Swaps element of the puzzle matrix
@@ -49,7 +51,7 @@ class Puzzle:
     def swap(self, direction):
         i = self.NULL_I
         j = self.NULL_J
-        if (self.checkDir(i, j, direction)):
+        if (self.checkDir(direction)):
             if (direction == "LEFT"): # NULL goes left
                 self.buffer[i][j] = self.buffer[i][j - 1]
                 self.buffer[i][j - 1] = "NULL"
@@ -72,7 +74,7 @@ class Puzzle:
     '''
     def isSolved(self):
         # return False if last element is not NULL
-        if (self.buffer[self.NULL_I][self.NULL_J] != "NULL"):
+        if (self.buffer[self.ROW_SIZE - 1][self.COL_SIZE - 1] != "NULL"):
             return False
         
         # else, check if all elements are in correct order, except for last element
@@ -85,6 +87,49 @@ class Puzzle:
         # return solved if all is sorted
         return True
     
+    '''
+    Returns 1 if:
+    - odd row and even column
+    - even row and odd column
+    '''
+    def nullPos(self):
+        return 1 if (self.NULL_I % 2 != self.NULL_J % 2) else 0
+    
+    '''
+    Counts the appearance of invalid position where
+    element with less value than current element appears on a higher position
+    '''
+    def invalidPos(self, idx):
+        count = 0
+        flattened_buffer = [x for arr in self.buffer for x in arr]
+        if (flattened_buffer[idx] == "NULL"):
+            count = self.COL_SIZE * self.ROW_SIZE - idx - 1
+        for i in range(idx, len(flattened_buffer)):
+            if (flattened_buffer[i] != "NULL" and flattened_buffer[idx] != "NULL"):
+                if (int(flattened_buffer[i]) < int(flattened_buffer[idx]) and i > idx):
+                    count += 1
+        return count
+    
+    '''
+    Returns the sum of invalid position
+    '''
+    def sumOfInvalidPos(self):
+        sum = 0
+        for i in range(0, self.ROW_SIZE * self.COL_SIZE):
+            sum += self.invalidPos(i)
+        return sum
+    
+    '''
+    Counts the appearance of invalid position where
+    tile position doesn't match the value of the tile
+    '''
+    def nonMatchingTile(self):
+        count = 0
+        flattened_buffer = [x for arr in self.buffer for x in arr]
+        for i in range(0, len(flattened_buffer)):
+            if ( (flattened_buffer[i] == "NULL" and i != len(flattened_buffer)) or int(flattened_buffer[i]) != (i + 1) ):
+                count += 1
+        return count;
     
         
     

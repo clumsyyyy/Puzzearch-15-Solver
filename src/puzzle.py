@@ -10,13 +10,12 @@ class Puzzle:
     Constructor for the puzzle matrix
     ''';
     def __init__(self, puzzle_string):
-        print(puzzle_string)
         self.buffer = [[0 for _ in range(self.COL_SIZE)] for _ in range(self.ROW_SIZE)]
         for i in range(self.ROW_SIZE):
             for j in range(self.COL_SIZE):
                 elmt = puzzle_string[i * self.COL_SIZE + j]
                 self.buffer[i][j] = elmt
-                if (elmt == "NULL"):
+                if (elmt == "-"):
                     self.NULL_I = i
                     self.NULL_J = j
                 
@@ -37,36 +36,36 @@ class Puzzle:
         i = self.NULL_I
         j = self.NULL_J
         if (direction == "LEFT"):
-            return self.buffer[i][j - 1] != "NULL" and j != 0
+            return j != 0 and self.buffer[i][j - 1] != "-"
         elif (direction == "RIGHT"):
-            return (j != self.COL_SIZE - 1) and self.buffer[i][j + 1] != "NULL"
+            return (j != self.COL_SIZE - 1) and self.buffer[i][j + 1] != "-"
         elif (direction == "UP"):
-            return self.buffer[i - 1][j] != "NULL" and i != 0
+            return i != 0 and self.buffer[i - 1][j] != "-"
         elif (direction == "DOWN"):
-            return (i != self.ROW_SIZE - 1) and self.buffer[i + 1][j] != "NULL" 
+            return (i != self.ROW_SIZE - 1) and self.buffer[i + 1][j] != "-" 
         
     '''
-    Swaps element of the puzzle matrix
+    shifts element of the puzzle matrix
     '''
-    def swap(self, direction):
+    def shift(self, direction):
         i = self.NULL_I
         j = self.NULL_J
         if (self.checkDir(direction)):
             if (direction == "LEFT"): # NULL goes left
                 self.buffer[i][j] = self.buffer[i][j - 1]
-                self.buffer[i][j - 1] = "NULL"
+                self.buffer[i][j - 1] = "-"
                 self.NULL_J -= 1
             elif (direction == "RIGHT"): # NULL goes right
                 self.buffer[i][j] = self.buffer[i][j + 1]
-                self.buffer[i][j + 1] = "NULL"
+                self.buffer[i][j + 1] = "-"
                 self.NULL_J += 1
             elif (direction == "UP"): # NULL goes up
                 self.buffer[i][j] = self.buffer[i - 1][j]
-                self.buffer[i - 1][j] = "NULL"
+                self.buffer[i - 1][j] = "-"
                 self.NULL_I -= 1
             elif (direction == "DOWN"): # NULL goes down
                 self.buffer[i][j] = self.buffer[i + 1][j]
-                self.buffer[i + 1][j] = "NULL"
+                self.buffer[i + 1][j] = "-"
                 self.NULL_I += 1
                 
     '''
@@ -74,7 +73,7 @@ class Puzzle:
     '''
     def isSolved(self):
         # return False if last element is not NULL
-        if (self.buffer[self.ROW_SIZE - 1][self.COL_SIZE - 1] != "NULL"):
+        if (self.buffer[self.ROW_SIZE - 1][self.COL_SIZE - 1] != "-"):
             return False
         
         # else, check if all elements are in correct order, except for last element
@@ -102,10 +101,10 @@ class Puzzle:
     def invalidPos(self, idx):
         count = 0
         flattened_buffer = [x for arr in self.buffer for x in arr]
-        if (flattened_buffer[idx] == "NULL"):
+        if (flattened_buffer[idx] == "-"):
             count = self.COL_SIZE * self.ROW_SIZE - idx - 1
         for i in range(idx, len(flattened_buffer)):
-            if (flattened_buffer[i] != "NULL" and flattened_buffer[idx] != "NULL"):
+            if (flattened_buffer[i] != "-" and flattened_buffer[idx] != "-"):
                 if (int(flattened_buffer[i]) < int(flattened_buffer[idx]) and i > idx):
                     count += 1
         return count
@@ -127,9 +126,6 @@ class Puzzle:
         count = 0
         flattened_buffer = [x for arr in self.buffer for x in arr]
         for i in range(0, len(flattened_buffer)):
-            if ( (flattened_buffer[i] == "NULL" and i != len(flattened_buffer)) or int(flattened_buffer[i]) != (i + 1) ):
+            if (flattened_buffer[i] != "-" and (int(flattened_buffer[i]) != (i + 1))):
                 count += 1
         return count;
-    
-        
-    

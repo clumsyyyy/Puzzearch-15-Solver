@@ -2,17 +2,24 @@
 
 import os
 
-def parseText():
-    print("\n[SELECTED] Text file")
-    print("Input your filename (without .txt)|")
-    print("[IMPORTANT] File must be included in the test folder!")
-    fname = input("| >> ")
+def parseText(fname):
     dirname = os.path.dirname(__file__)
     path = os.path.join(dirname, '../test/')
-    file = open(path + fname + ".txt", "r")
-    return file.read().replace("-", "ES").replace("\n", " ").split(" ")
-
-
+    if (os.path.exists(path + fname + ".txt")):
+        file = open(path + fname + ".txt", "r")
+        arr = file.read().replace("-", "ES").replace("\n", " ").split(" ")
+        temp = [x for x in (arr)]
+        temp.remove("ES")
+        temp.append("16")
+        temp = [int(x) for x in temp]
+        temp.sort()
+        for i in range(len(temp)):
+            if (int(temp[i]) != i + 1):
+                raise Exception("[INVALID] Input is not valid!")
+        return arr
+    else:
+        raise Exception("[INVALID] File doesn't exist! Make sure it is stored in the 'test' folder and the filename is correct! (without .txt)")
+    
 def parseInput():
     print("\n[SELECTED] Input by user")
     print("Input the desired matrix in a 4 x 4 grid style!")
@@ -21,6 +28,29 @@ def parseInput():
     for i in range(4):
         print("[ROW {}] | >> ".format(i + 1), end = " ")
         buffer[i] = list(map(str, input().split()))
+        
     flattened_buffer = ' '.join([x for arr in buffer for x in arr])
-    
-    return flattened_buffer.replace("-", "ES").replace("\n", " ").split(" ")
+    arr = flattened_buffer.replace("-", "ES").replace("\n", " ").split(" ")
+    temp = [x for x in (arr)]
+    temp.remove("ES")
+    temp.append("16")
+    temp = [int(x) for x in temp]
+    temp.sort()
+    for i in range(len(temp)):
+        if (int(temp[i]) != i + 1):
+            raise Exception("[INVALID] Input is not valid!")
+    return arr
+
+def parseGUI(buffer):
+    arr = buffer.replace("-", "ES").replace("\n", " ").split(" ")
+    temp = [x for x in (arr)]
+    temp.remove("ES")
+    temp.append("16")
+    print(temp)
+    temp = [int(x) for x in temp]
+    temp.sort()
+    for i in range(len(temp)):
+        if (int(temp[i]) != i + 1):
+            raise Exception("[INVALID] Input is not valid!")
+    return buffer.replace("-", "ES").replace("\n", " ").split(" ")
+

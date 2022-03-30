@@ -9,7 +9,7 @@ def parseText():
     fname = input("| >> ")
     dirname = os.path.dirname(__file__)
     path = os.path.join(dirname, '../test/')
-    file = open(path + fname, "r")
+    file = open(path + fname + ".txt", "r")
     return file.read().replace("-", "ES").replace("\n", " ").split(" ")
 
 

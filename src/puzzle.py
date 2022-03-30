@@ -7,7 +7,10 @@ class PuzzleItem:
     priority: int
     item: Any=field(compare=False)
     direction: string
-    
+@dataclass(order=True)
+class InvItem:
+    priority: int
+    value: Any=field(compare=False)
     
 class Puzzle:
 
@@ -157,10 +160,69 @@ class Puzzle:
     #         puzzle.id = curr_id
     #     return puzzle
     
-    def insertingIntoQueue(self, queue, curr_id, direction):
+    '''
+    Insert puzzle states into the queue, checks all
+    possible occurences of the puzzle state
+    '''
+    def insertingIntoQueue(self, queue, curr_id, prev_direction):
         if (self.isSolved()):
             return False
-
+        if (self.checkDir("UP") and prev_direction != "DOWN"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("UP")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            # queue.put(PuzzleItem(currCost, puzzle, "UP"))
+            if (puzzle.isSolved()):
+                queue.put(PuzzleItem(0, puzzle, "UP"))
+                return False
+            else:
+                queue.put(PuzzleItem(currCost, puzzle, "UP"))
+            
+        if (self.checkDir("RIGHT") and prev_direction != "LEFT"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("RIGHT")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            # queue.put(PuzzleItem(currCost, puzzle, "RIGHT"))
+            if (puzzle.isSolved()):
+                queue.put(PuzzleItem(0, puzzle, "RIGHT"))
+                return False
+            else:
+                queue.put(PuzzleItem(currCost, puzzle, "RIGHT"))
+            
+        if (self.checkDir("DOWN") and prev_direction != "UP"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("DOWN")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            # queue.put(PuzzleItem(currCost, puzzle, "DOWN"))
+            if (puzzle.isSolved()):
+                queue.put(PuzzleItem(0, puzzle, "DOWN"))
+                return False
+            else:
+                queue.put(PuzzleItem(currCost, puzzle, "DOWN"))
+            
+        if (self.checkDir("LEFT") and prev_direction != "RIGHT"):
+            puzzle = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle.shift("LEFT")
+            puzzle.curr_depth = self.curr_depth + 1
+            puzzle.id = curr_id
+            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
+            # puzzle.show()
+            # queue.put(PuzzleItem(currCost, puzzle, "LEFT"))
+            if (puzzle.isSolved()):
+                queue.put(PuzzleItem(0, puzzle, "LEFT"))
+                return False
+            else:
+                queue.put(PuzzleItem(currCost, puzzle, "LEFT"))
+                
         # for direction in ["UP", "DOWN", "LEFT", "RIGHT"]:
         #     temp = self.createShiftedPuzzle(direction, prev_direction, curr_id)
         #     if (temp != None):
@@ -172,40 +234,5 @@ class Puzzle:
         #         puzzle.show()
         #         queue.put(PuzzleItem(currCost, temp, direction))
         #         temp = None
-        if (self.checkDir("UP") and direction != "DOWN"):
-                puzzle = Puzzle([x for arr in self.buffer for x in arr])
-                puzzle.shift("UP")
-                puzzle.curr_depth = self.curr_depth + 1
-                puzzle.id = curr_id
-                currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
-                # puzzle.show()
-                queue.put(PuzzleItem(currCost, puzzle,"UP"))
-            
-        if (self.checkDir("RIGHT") and direction != "LEFT"):
-            puzzle = Puzzle([x for arr in self.buffer for x in arr])
-            puzzle.shift("RIGHT")
-            puzzle.curr_depth = self.curr_depth + 1
-            puzzle.id = curr_id
-            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
-            # puzzle.show()
-            queue.put(PuzzleItem(currCost, puzzle, "RIGHT"))
-            
-        if (self.checkDir("DOWN") and direction != "UP"):
-            puzzle = Puzzle([x for arr in self.buffer for x in arr])
-            puzzle.shift("DOWN")
-            puzzle.curr_depth = self.curr_depth + 1
-            puzzle.id = curr_id
-            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
-            # puzzle.show()
-            queue.put(PuzzleItem(currCost, puzzle, "DOWN"))
-            
-        if (self.checkDir("LEFT") and direction != "RIGHT"):
-            puzzle = Puzzle([x for arr in self.buffer for x in arr])
-            puzzle.shift("LEFT")
-            puzzle.curr_depth = self.curr_depth + 1
-            puzzle.id = curr_id
-            currCost = puzzle.curr_depth + puzzle.nonMatchingTile()
-            # puzzle.show()
-            queue.put(PuzzleItem(currCost, puzzle, "LEFT"))
             
         return True

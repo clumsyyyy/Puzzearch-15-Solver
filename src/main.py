@@ -5,6 +5,7 @@ def main():
     print("Selected your desired input method: ")
     print("[1] Text file")
     print("[2] Input by user")
+    print("[0] Exit")
     option = int(input("| >> "))
     if (option == 1):
         buffer = fp.parseText()

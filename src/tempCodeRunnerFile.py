@@ -1,2 +1,2 @@
 
-import algo 
+    elif (option == 2):

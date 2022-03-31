@@ -1,2 +1,2 @@
 
-import algo 
+frame = Frame(window)

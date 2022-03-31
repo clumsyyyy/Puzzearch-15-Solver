@@ -32,7 +32,7 @@ def main():
             print("Filename doesn't exist!")
         else:
             p = pc.Puzzle(buffer)
-            res, outputMessage = algo.solve(p)
+            _, res, outputMessage = algo.solve(p)
             for i in range(len(res)):
                 res[i][0].show()
                 print("Step {} | Command: {} \n".format(i, res[i][1]))

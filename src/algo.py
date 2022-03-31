@@ -9,6 +9,9 @@ def solve(p):
     p.show()
     print()
     
+    outputMessage = ""
+    res = []
+    kurangMessage = ""
     # displays initial invalid values (kurang[i])
     if (not p.isSolved()):
         invalid_pq = PriorityQueue()
@@ -20,18 +23,26 @@ def solve(p):
                 invalid_pq.put(InvItem(currentValue, p.invalidPos(i)))
                 
         print("List of Invalid Values: ")
+        kurangMessage += "List of Invalid Values: \n"
+        
         while (not invalid_pq.empty()):
             temp = invalid_pq.get()
             if (temp.priority == 16):
                 print("Kurang[ES] = {}".format(temp.value))
+                kurangMessage += "Kurang[ES] = {}\n".format(temp.value)
             else:
                 print("Kurang[{}] = {}".format(temp.priority, temp.value))
+                kurangMessage += "Kurang[{}] = {}\n".format(temp.priority, temp.value)
                 
         print("Sum of invalid values:", p.sumOfInvalidPos())
         print("Sum of invalid values and whether empty space in determined position:",
               p.sumOfInvalidPos() + p.nullPos())
-        
+        kurangMessage+= "Sum of invalid values: {}\n".format(p.sumOfInvalidPos())
+        kurangMessage += "Sum of invalid values and whether empty space in determined position: {}\n".format(
+            p.sumOfInvalidPos() + p.nullPos())
+
         if ((p.sumOfInvalidPos() + p.nullPos()) % 2 != 0):
+            outputMessage = "This puzzle cannot be solved!\n"
             print("This puzzle cannot be solved!\n")
         else:
             print("\nSolving puzzle ... ")
@@ -40,7 +51,6 @@ def solve(p):
             prioqueue.put(PuzzleItem(0, p, "NONE"))
             state_dict = {}
             puzzle_arr = []
-            res = []
             curr_id = 0
 
             # starts searching process
@@ -134,12 +144,13 @@ def solve(p):
             #     res[i][0].show()
             #     print("Step {} | Command: {} \n".format(i, res[i][1]))
 
-            outputMessage = ""
+
             # outputs process information
             outputMessage += "\nPuzzle solved successfully!"
             outputMessage += "\nElapsed time: " + str("%.11f" % (stop_time - start_time)) + " seconds"
             outputMessage += "\nRaised nodes: " + str(deq_count+ len(res))
             outputMessage += "\nSteps taken : " + str(len(res))
-            return res, outputMessage
+            return kurangMessage, res, outputMessage
     else:
+        outputMessage = "This puzzle is already solved! >:(\n"
         print("This puzzle is already solved! >:(\n")

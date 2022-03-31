@@ -42,7 +42,9 @@ def parseInput():
     return arr
 
 def parseGUI(buffer):
-    arr = buffer.replace("-", "ES").replace("\n", " ").split(" ")
+    print(buffer)
+    arr = buffer.rstrip().replace("-", "ES").replace("\n", " ").split(" ")
+    print(arr)
     temp = [x for x in (arr)]
     temp.remove("ES")
     temp.append("16")

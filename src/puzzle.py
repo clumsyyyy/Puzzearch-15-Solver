@@ -152,36 +152,12 @@ class Puzzle:
                 count += 1
         return count;
     
-    # def createShiftedPuzzle(self, direction, prev_direction, curr_id):
-    #     direction_dict = {
-    #         "UP": "DOWN",
-    #         "DOWN": "LEFT",
-    #         "LEFT": "RIGHT",
-    #         "RIGHT": "LEFT"
-    #     }
+    def stringify(self):
+        return "|".join([x for arr in self.buffer for x in arr])
 
-    #     puzzle = None
-    #     if (self.checkDir(direction) and prev_direction != direction_dict[direction]):
-    #         puzzle = Puzzle([x for arr in self.buffer for x in arr])
-    #         puzzle.shift(direction)
-    #         puzzle.curr_depth = self.curr_depth + 1
-    #         puzzle.id = curr_id
-    #     return puzzle
     '''
-    Checks whether current state of the puzzle has existed before'''
+    Checks whether current state of the puzzle has existed before
+    '''
     def stateExisted(self, state_dict):
         state = "|".join([x for arr in self.buffer for x in arr])
-        return True if state in state_dict else False
-                
-        # for direction in ["UP", "DOWN", "LEFT", "RIGHT"]:
-        #     temp = self.createShiftedPuzzle(direction, prev_direction, curr_id)
-        #     if (temp != None):
-        #         puzzle = Puzzle([x for arr in self.buffer for x in arr])
-        #         puzzle.shift(direction)
-        #         puzzle.curr_depth = self.curr_depth + 1
-        #         puzzle.id = curr_id
-        #         currCost = temp.curr_depth + temp.nonMatchingTile()
-        #         puzzle.print(puzzle)()
-        #         queue.put(PuzzleItem(currCost, temp, direction))
-        #         temp = None
-            
+        return True if (state in state_dict) else False

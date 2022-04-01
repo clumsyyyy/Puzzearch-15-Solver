@@ -14,28 +14,22 @@ def main():
                 print("Input your filename (without .txt)|")
                 print("[IMPORTANT] File must be included in the test folder!")
                 fname = input("| >> ")
-                try:
-                    buffer = fp.parseText(fname)
-                except Exception as e:
-                    print(e)
-                    continue
+                buffer = fp.parseText(fname)
+
             elif (option == 2):
                 buffer = fp.parseInput()
                 
             elif (option == 0):
                 print("Exiting program...")
                 break
-        except Exception as e:
-            print(e)
-            continue
-        if (buffer == "err"):
-            print("Filename doesn't exist!")
-        else:
             p = pc.Puzzle(buffer)
             _, res, outputMessage = algo.solve(p)
             for i in range(len(res)):
                 res[i][0].show()
                 print("Step {} | Command: {} \n".format(i, res[i][1]))
             print(outputMessage)
+        except Exception as e:
+            print(e)
+            continue
 
 main()

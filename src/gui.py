@@ -17,7 +17,12 @@ def solveClick():
         kurangMsg, res, outputMsg = solve(p)
         ans_text.configure(text = outputMsg)
         kurang_label.configure(text = kurangMsg)
-        layout.renderAll(res)
+        
+        delay_time = 0.5
+        if (time_entry.get()) != "":
+            delay_time = float(time_entry.get())
+        layout.renderAll(res, delay_time)
+
     except Exception as e:
         messagebox.showerror("[ERROR]", e)
 
@@ -54,12 +59,12 @@ class GUIPuzzle:
                 else:
                     self.e.insert(END, puzzle.buffer[i][j])
 
-    def renderAll(self, puzzle_arr):
+    def renderAll(self, puzzle_arr, delay_time):
         global frame
         for i in range(len(puzzle_arr)):
             self.render(puzzle_arr[i][0])
             steps_label.configure(text = "Step " + str(i + 1) + ": " + puzzle_arr[i][1])
-            time.sleep(1)
+            time.sleep(delay_time)
             window.update()
             
             
@@ -75,8 +80,14 @@ window.title("15-Puzzle Solver")
 frame = Frame(window)
 frame.pack(fill= BOTH, expand= True, padx= 20, pady=20)
 
-fname_entry = Entry(frame, text = "Input file name (without *.txt)", font = ('Arial', 10), width = 36)
+fname_entry = Entry(frame, text = "Input file name (without *.txt)", font = ('Arial', 10), width = 20)
 fname_entry.place(x = 0, y = begin_coord + 40)
+
+time_entry = Entry(frame, text = "Time limit (in seconds)", font = ('Arial', 10), width = 6)
+time_entry.place(x = 200, y = begin_coord + 40 )
+
+time_label = Label(frame, text = "Delay\ntime", font = ('Arial', 8))
+time_label.place(x = 170, y = begin_coord + 30)
 
 layout = GUIPuzzle()
 
@@ -88,6 +99,7 @@ fname_label.place(x = 0, y = begin_coord + 20)
 
 kurang_label = Label(frame, font = ("Arial, 8"), wraplength = 150)
 kurang_label.place(x = 300, y = 0)
+
 solve_button = Button(frame, text = "Solve", width = 16, command = solveClick)
 solve_button.place(x = 0, y = begin_coord + 70)
 

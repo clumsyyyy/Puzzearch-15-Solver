@@ -4,9 +4,14 @@ from algo import solve
 from puzzle import *
 from fparser import *
 import time
+
 puzzle_arr = []
 
 def solveClick():
+    
+    '''
+    Function to solve the puzzle from the GUI
+    '''
     global puzzle_arr
     filepath = fname_entry.get()
     try:
@@ -27,13 +32,19 @@ def solveClick():
         messagebox.showerror("[ERROR]", e)
 
 class GUIPuzzle:
+    '''
+    Initialize table for the puzzle
+    '''
     def __init__(self):
         for i in range(4):
             for j in range(4):
                 self.e = Entry(frame, width = 4, font = ('Arial', 20))
                 self.e.grid(row = i, column = j)
                 self.e.insert(END, "")
-                
+    
+    '''
+    Gets buffer value from GUI to be parsed
+    '''
     def getBuf(self):
         buffer = ""
         for i in range(4):
@@ -42,12 +53,18 @@ class GUIPuzzle:
 
         return buffer
                 
+    '''
+    Clears table and resets background color
+    '''
     def clear(self):
         for i in range(4):
             for j in range(4):
                 frame.grid_slaves(row = i, column = j)[0].config({"background": "white"})
                 frame.grid_slaves(row = i, column = j)[0].delete(0, END)
-                
+
+    '''
+    Renders a puzzle to the GUI
+    '''
     def render(self, puzzle):
         for i in range(4):
             for j in range(4):
@@ -59,6 +76,10 @@ class GUIPuzzle:
                 else:
                     self.e.insert(END, puzzle.buffer[i][j])
 
+    '''
+    Renders all puzzles in an array to the GUI
+    with delay time
+    '''
     def renderAll(self, puzzle_arr, delay_time):
         global frame
         for i in range(len(puzzle_arr)):
@@ -71,6 +92,9 @@ class GUIPuzzle:
 
 begin_coord = 150
 
+'''
+GUI components
+'''
 window = Tk()
 window.geometry("500x400")
 window.minsize(500, 400)

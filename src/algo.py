@@ -43,31 +43,34 @@ def solve(p):
         else:
             print("\nSolving puzzle ... ")
             prioqueue = PriorityQueue()
+            p.curr_depth = 0
+            p.id = 0
+            
             # initializes initial puzzle as first item in queue
             prioqueue.put(PuzzleItem(0, [p, "NONE"]))
             state_dict = {}
             puzzle_arr = []
             curr_id = 0
             deq_count = 0
+            
             # starts searching process
             start_time = time.default_timer()
             
-            
-            
             while (prioqueue.qsize() != 0):
+                
                 # dequeues item with lowest priority
                 puzzleItem = prioqueue.get()
                 temp = puzzleItem.item[0]
                 prev_direction = puzzleItem.item[1]
-
                 # adds that item to the list of solved puzzles
                 puzzle_arr.append([temp, prev_direction])
                 deq_count += 1
                 curr_id += 1
                 
-                if temp.nonMatchingTile() == 0:
+                if temp.isSolved():
                     stop_time = time.default_timer()
                     break
+                
                 if (temp.checkDir("UP") and prev_direction != "DOWN"):
                     puzzle_up = Puzzle([x for arr in temp.buffer for x in arr])
                     puzzle_up.shift("UP")
@@ -78,11 +81,6 @@ def solve(p):
                         currCost = puzzle_up.curr_depth + puzzle_up.nonMatchingTile()
                         prioqueue.put(PuzzleItem(currCost, [puzzle_up, "UP"]))
                         state_dict[state] = True
-                        
-                    # if (puzzle.isSolved()):
-                    #     prioqueue.put(PuzzleItem(0, puzzle, "UP"))
-                    #     return False
-                    
                             
                 if (temp.checkDir("RIGHT") and prev_direction != "LEFT"):
                     puzzle_right = Puzzle([x for arr in temp.buffer for x in arr])
@@ -94,9 +92,6 @@ def solve(p):
                         currCost = puzzle_right.curr_depth + puzzle_right.nonMatchingTile()
                         prioqueue.put(PuzzleItem(currCost, [puzzle_right, "RIGHT"]))
                         state_dict[state] = True
-                    # if (puzzle.isSolved()):
-                    #     prioqueue.put(PuzzleItem(0, puzzle, "RIGHT"))
-                    #     return False
             
                 if (temp.checkDir("DOWN") and prev_direction != "UP"):
                     puzzle_down = Puzzle([x for arr in temp.buffer for x in arr])
@@ -107,10 +102,7 @@ def solve(p):
                         puzzle_down.id = curr_id
                         currCost = puzzle_down.curr_depth + puzzle_down.nonMatchingTile()
                         prioqueue.put(PuzzleItem(currCost, [puzzle_down, "DOWN"]))
-                        state_dict[state] = True
-                    # if (puzzle.isSolved()):
-                    #     prioqueue.put(PuzzleItem(0, puzzle, "DOWN"))
-                    #     return False               
+                        state_dict[state] = True             
                     
                 if (temp.checkDir("LEFT") and prev_direction != "RIGHT"):
                     puzzle_left = Puzzle([x for arr in temp.buffer for x in arr])
@@ -126,9 +118,7 @@ def solve(p):
 
             # backtracks parent id to get the path
             # of solutions
-
-            answer = prioqueue.get()
-            res = [[answer.item[0], answer.item[1]]]
+            res = []
             puzzle_elmt = puzzle_arr[-1]
             while (puzzle_elmt[0].id != 0):
                 res = [puzzle_elmt] + res

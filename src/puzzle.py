@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-import string
 from typing import Any
 
 @dataclass(order=True)

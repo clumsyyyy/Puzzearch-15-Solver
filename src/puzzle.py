@@ -6,7 +6,6 @@ from typing import Any
 class PuzzleItem:
     priority: int
     item: Any=field(compare=False)
-    direction: string
 @dataclass(order=True)
 class InvItem:
     priority: int
@@ -42,15 +41,8 @@ class Puzzle:
             for j in range(self.COL_SIZE):
                 print(self.buffer[i][j], end = " ")
             print()
-            
-    def __equals__(self, other):
-        for i in range(self.ROW_SIZE):
-            for j in range(self.COL_SIZE):
-                if (self.buffer[i][j] != other.buffer[i][j]):
-                    return False
-        return True
         
-    
+
     '''
     Checks possible movement directions for the current position
     '''
@@ -151,13 +143,79 @@ class Puzzle:
             if (flattened_buffer[i] != "ES" and (int(flattened_buffer[i]) != (i + 1))):
                 count += 1
         return count;
-    
-    def stringify(self):
-        return "|".join([x for arr in self.buffer for x in arr])
 
     '''
     Checks whether current state of the puzzle has existed before
     '''
-    def stateExisted(self, state_dict):
+    def checkState(self, state_dict):
         state = "|".join([x for arr in self.buffer for x in arr])
-        return True if (state in state_dict) else False
+        if (state in state_dict):
+            return True, "|"
+        else:
+            return False, state
+
+    
+    def insertingIntoQueue(self, prev_direction, state_dict, prioqueue, curr_id):
+        if self.nonMatchingTile() == 0:
+            return False
+
+        if (self.checkDir("UP") and prev_direction != "DOWN"):
+            puzzle_up = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle_up.shift("UP")
+            has_existed, state = puzzle_up.checkState(state_dict)
+            if (not has_existed):
+                puzzle_up.curr_depth = self.curr_depth + 1
+                puzzle_up.id = curr_id
+                currCost = puzzle_up.curr_depth + puzzle_up.nonMatchingTile()
+                prioqueue.put(PuzzleItem(currCost, [puzzle_up, "UP"]))
+                state_dict[state] = True
+                
+            # if (puzzle.isSolved()):
+            #     prioqueue.put(PuzzleItem(0, puzzle, "UP"))
+            #     return False
+            
+                    
+        if (self.checkDir("RIGHT") and prev_direction != "LEFT"):
+            puzzle_right = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle_right.shift("RIGHT")
+            has_existed, state = puzzle_right.checkState(state_dict)
+            if (not has_existed):
+                puzzle_right.curr_depth = self.curr_depth + 1
+                puzzle_right.id = curr_id
+                currCost = puzzle_right.curr_depth + puzzle_right.nonMatchingTile()
+                prioqueue.put(PuzzleItem(currCost, [puzzle_right, "RIGHT"]))
+                state_dict[state] = True
+            # if (puzzle.isSolved()):
+            #     prioqueue.put(PuzzleItem(0, puzzle, "RIGHT"))
+            #     return False
+    
+        if (self.checkDir("DOWN") and prev_direction != "UP"):
+            puzzle_down = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle_down.shift("DOWN")
+            has_existed, state = puzzle_down.checkState(state_dict)
+            if (not has_existed):
+                puzzle_down.curr_depth = self.curr_depth + 1
+                puzzle_down.id = curr_id
+                currCost = puzzle_down.curr_depth + puzzle_down.nonMatchingTile()
+                prioqueue.put(PuzzleItem(currCost, [puzzle_down, "DOWN"]))
+                state_dict[state] = True
+            # if (puzzle.isSolved()):
+            #     prioqueue.put(PuzzleItem(0, puzzle, "DOWN"))
+            #     return False               
+            
+        if (self.checkDir("LEFT") and prev_direction != "RIGHT"):
+            puzzle_left = Puzzle([x for arr in self.buffer for x in arr])
+            puzzle_left.shift("LEFT")
+            has_existed, state = puzzle_left.checkState(state_dict)
+            if (not has_existed):
+                puzzle_left.curr_depth = self.curr_depth + 1
+                puzzle_left.id = curr_id
+                currCost = puzzle_left.curr_depth + puzzle_left.nonMatchingTile()
+                prioqueue.put(PuzzleItem(currCost, [puzzle_left, "LEFT"]))
+                state_dict[state] = True
+        
+        return True
+            # if (puzzle.isSolved()):
+            #     prioqueue.put(PuzzleItem(0, puzzle, "LEFT"))
+            #     return False
+

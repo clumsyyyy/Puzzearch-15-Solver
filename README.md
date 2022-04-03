@@ -32,9 +32,6 @@ posisi awal ke susunan akhir.
 ## Requirements
 **[RECOMMENDED]**
 - Python 3.9.4 64-bit
-- _Library Python_ sebagai berikut (untuk menjalankan file `gui.py`):
-    - tkinter untuk _GUI_                `pip install tkinter`
-
 
 ## Kompilasi
 1. Pastikan berada di folder `src` (`root/src/lib`)

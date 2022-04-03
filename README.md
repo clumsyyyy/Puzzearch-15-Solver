@@ -3,7 +3,8 @@
 > Implementasi algoritma _branch and bound_ untuk melakukan penyelesaian persoalan 15-puzzle
 > dalam bentuk CLI dan GUI sebagai Tugas Kecil 2 Mata Kuliah IF2211 Strategi Algoritma
 
-![image](https://user-images.githubusercontent.com/71161031/161386483-99b8b578-80fa-40b3-a09a-a9f2bd92a2c9.png)
+![gifstima](https://user-images.githubusercontent.com/71161031/161412029-ef911e65-a318-4a40-b3fe-cbf30e536a11.gif)
+
 
 
 ## Daftar Isi

@@ -1,5 +1,3 @@
-# Parser script for testcases
-
 import os
 
 def checkValid(arr):
@@ -24,9 +22,6 @@ def parseText(fname):
         raise Exception("[INVALID] File doesn't exist! Make sure it is stored in the 'test' folder and the filename is correct! (without .txt)")
     
 def parseInput():
-    print("\n[SELECTED] Input by user")
-    print("Input the desired matrix in a 4 x 4 grid style!")
-    print("Fill the empty space character with '-'!")
     buffer = [[0 for _ in range(4)] for _ in range(4)]
     for i in range(4):
         print("[ROW {}] | >> ".format(i + 1), end = " ")

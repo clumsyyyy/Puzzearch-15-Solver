@@ -1,6 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+GREEN_COLOR = "\u001b[32m"
+RED_COLOR = "\033[91m"
+RESET_COLOR = "\033[0m"
+CYAN_COLOR = "\u001b[36m"
 @dataclass(order=True)
 class PuzzleItem:
     priority: int
@@ -41,7 +45,10 @@ class Puzzle:
     def show(self):
         for i in range(self.ROW_SIZE):
             for j in range(self.COL_SIZE):
-                print(self.buffer[i][j], end = " ")
+                if (self.buffer[i][j] == "ES"):
+                    print(GREEN_COLOR + self.buffer[i][j] + RESET_COLOR, end=" ")
+                else:
+                    print(self.buffer[i][j], end = " ")
             print()
         
     '''
@@ -148,10 +155,6 @@ class Puzzle:
     '''
     Checks whether current state of the puzzle has existed before
     '''
-    def checkState(self, state_dict):
+    def stateExisted(self, state_dict):
         state = "|".join([x for arr in self.buffer for x in arr])
-        if (state in state_dict):
-            return True, "|"
-        else:
-            return False, state
-
+        return True if state in state_dict else False

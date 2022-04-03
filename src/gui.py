@@ -57,6 +57,9 @@ class GUIPuzzle:
     Clears table and resets background color
     '''
     def clear(self):
+        kurang_label.configure(text = "")
+        steps_label.configure(text = "")
+        ans_text.configure(text = "Waiting for search to begin...")
         for i in range(4):
             for j in range(4):
                 frame.grid_slaves(row = i, column = j)[0].config({"background": "white"})
@@ -84,7 +87,7 @@ class GUIPuzzle:
         global frame
         for i in range(len(puzzle_arr)):
             self.render(puzzle_arr[i][0])
-            steps_label.configure(text = "Step " + str(i + 1) + ": " + puzzle_arr[i][1])
+            steps_label.configure(text = "Step " + str(i) + ": " + puzzle_arr[i][1])
             time.sleep(delay_time)
             window.update()
             
@@ -99,7 +102,7 @@ window = Tk()
 window.geometry("500x400")
 window.minsize(500, 400)
 window.maxsize(500, 400)
-window.title("15-Puzzle Solver")
+window.title("Puzzearch-15 Puzzle Solver")
 
 frame = Frame(window)
 frame.pack(fill= BOTH, expand= True, padx= 20, pady=20)

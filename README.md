@@ -1,7 +1,7 @@
 # Puzzearch-15: Penyelesaian Persoalan 15-Puzzle dengan Algoritma _Branch and Bound_
 
 > Implementasi algoritma _branch and bound_ untuk melakukan penyelesaian persoalan 15-puzzle
-> dalam bentuk CLI dan GUI sebagai Tugas Kecil 2 Mata Kuliah IF2211 Strategi Algoritma
+> dalam bentuk CLI dan GUI sebagai Tugas Kecil 3 Mata Kuliah IF2211 Strategi Algoritma
 
 ![gifstima](https://user-images.githubusercontent.com/71161031/161412029-ef911e65-a318-4a40-b3fe-cbf30e536a11.gif)
 
